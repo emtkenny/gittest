@@ -14,10 +14,6 @@
                 font-size: 45px;
                 
             }
-            .plus{
-                position: absolute;
-                
-            }
             div img{
                 height: 40px;
             }
@@ -25,7 +21,12 @@
                 position:fixed;
                 right:1%
             }
-            body input{
+            .bpm{
+                position: fixed;
+                top:90%;
+                left:0%;
+            }
+            body .bpm input{
                 position:relative;
                 font-size: 25px;
                 top:-6px;
@@ -41,23 +42,20 @@
     </head>
     <body>
         <div>
-            <img src="qJeRpp_WmKGWrqc-modified.jpg" id="threeline">
-            <img src="下載 (1).png" id="setting">
-        </div>
-        
-            
-        
-        <br>
-        <div>
-            <img src="pngtree-additional-plus-icon-png-image_1788619.jpg" id="plus">
+            <img src="threeline.jpg" id="threeline">
+            <img src="setting.png" id="setting">
         </div>
         <br>
-        <label for="bpm">BPM:</label>
-        <input type="text" id="bpm" name="bpm">
-        
         <div>
-            <img src="下載.jpg" id="play">
+            <img src="plus.jpg" id="plus">
         </div>
-        
+        <br>
+        <div class="bpm">
+            <label for="bpm">BPM:</label>
+            <input type="text" id="bpm" name="bpm">
+        </div>
+        <div>
+            <img src="play.png" id="play">
+        </div>
     </body>
 </html>

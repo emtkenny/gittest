@@ -1,0 +1,57 @@
+#beatCanvas {
+    border: 1px solid black;
+}
+
+body {
+    background-color: black; /* 設定背景顏色為黑色 */
+}
+
+canvas {
+    border: 1px solid white; /* 給 canvas 加上白色邊框 */
+}
+body{
+    background-color: black;
+    position: absolute;
+    
+}
+body label{
+    color: white;
+    height: 40px;
+    font-size: 45px;
+    
+}
+div img{
+    height: 40px;
+}
+div #setting{
+    position:fixed;
+    right:1%
+}
+.bpm{
+    position: fixed;
+    top:90%;
+    left:0%;
+}
+.sides{
+    position: fixed;
+    top:80%;
+    left:0%;
+}
+body .sides input{
+    position:relative;
+    font-size: 25px;
+    top:-6px;
+    width: 55px;
+}
+body .bpm input{
+    position:relative;
+    font-size: 25px;
+    top:-6px;
+    width: 55px;
+}
+body div #play{
+    position:fixed;
+    top: 70%;
+    left: 20%;
+    height: 40px;
+}
