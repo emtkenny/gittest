@@ -7,6 +7,9 @@ body {
 }
 
 canvas {
+    position:fixed;
+    top: 37%;
+    left: 30%;
     border: 1px solid white; /* 給 canvas 加上白色邊框 */
 }
 body{

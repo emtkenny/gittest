@@ -2,6 +2,7 @@ var canvas = document.getElementById("beatCanvas");
 var ctx = canvas.getContext("2d");
 var sidesInput = document.getElementById("sides");
 var bpmInput = document.getElementById("bpm");
+var playclick=document.getElementById("play");
 
 var sides = parseInt(sidesInput.value);
 var bpm = parseInt(bpmInput.value);
@@ -10,6 +11,7 @@ var startTime = Date.now();
 var elapsedTime = 0;
 var currentEdge = 0;
 var animationId;
+var play=0;
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -87,10 +89,17 @@ function updateInputs() {
     bpm = parseInt(bpmInput.value);
     interval = 240000 / bpm; // Recalculate interval
 }
-
+function plays(){
+    if(play==0){
+        playclick.setAttribute("src","pause.png");
+        play=1;
+    }else{
+        playclick.setAttribute("src","play.png");
+        play=0;
+    }
+}
 // Event listeners
 sidesInput.addEventListener("input", updateInputs);
 bpmInput.addEventListener("input", updateInputs);
-
 // Start animation loop
 draw();
