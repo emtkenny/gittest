@@ -1,12 +1,9 @@
 var canvas = document.getElementById("beatCanvas");
 var ctx = canvas.getContext("2d");
+var sidesInput = document.getElementById("sides");
 var bpmInput = document.getElementById("bpm");
 var playclick=document.getElementById("play");
-var setting = document.getElementById("setting");
-var daymode = document.getElementById("daymode");
-var threelines = document.getElementById("threeline");
-var bpmWord = document.getElementById("bpmWord");
-var sides = parseInt(0);
+var sides = parseInt(sidesInput.value);
 var bpm = parseInt(bpmInput.value);
 var interval = 240000 / bpm; // Calculate interval in milliseconds
 var startTime = Date.now();
@@ -14,7 +11,6 @@ var elapsedTime = 0;
 var currentEdge = 0;
 var animationId;
 var play=0;
-var nightmode=1;
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -43,19 +39,13 @@ function addPolygon() {
 
     if (sidesNum && polygons.length < 8) {
         var color = getRandomColor();
-        polygons.push({ 
-            sides: sidesNum, 
-            color: color, 
-            startTime: Date.now(), 
-            indicatorX: null, // 初始化圓點的 X 坐標
-            indicatorY: null, // 初始化圓點的 Y 坐標
-            currentEdge: 0 // 初始化當前邊
-        });
+        polygons.push({ sides: sidesNum, color: color, startTime: Date.now() });
         resetStartTime();
         draw();
     } else if (polygons.length >= 8) {
         alert("最多只能添加8個圖形");
     }
+    
 }
 
 // 其他函數保持不變
@@ -71,21 +61,19 @@ function resetStartTime() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 更新 elapsedTime
-    if (isAnimating) {
-        elapsedTime = Date.now() - startTime;
-    }
-
-    // 绘制所有多边形和圆点
+    // 繪製所有多邊形
     polygons.forEach(polygon => {
         drawPolygon(polygon.sides, polygon.color);
-        drawBeatIndicator();
     });
+
+    // 繪製圓點
+    drawBeatIndicator();
 
     animationId = requestAnimationFrame(draw);
 }
 
 function drawBeatIndicator() {
+ //   if (!isAnimating) return;
     var currentTime = Date.now();
     polygons.forEach(polygon => {
         var elapsedTime = currentTime - polygon.startTime;
@@ -121,6 +109,7 @@ function drawBeatIndicator() {
 }
 
 
+
 function drawPolygon(sides, color) {
     ctx.beginPath();
     var centerX = canvas.width / 2;
@@ -137,76 +126,46 @@ function drawPolygon(sides, color) {
     ctx.strokeStyle = color;
     ctx.stroke();
 }
+
+function playBeat() {
+    // Add code to play beat sound
+    console.log("Beat!");
+}
+
 function updateInputs() {
     // Update sides and BPM
-    
+    sides = parseInt(sidesInput.value);
     bpm = parseInt(bpmInput.value);
     interval = 240000 / bpm; // Recalculate interval
 }
-var isAnimating = false; // 用於控制動畫的全局變量
+//var isAnimating = false; // 用於控制動畫的全局變量
 
-function plays() {
-    if (!isAnimating) {
-        if(nightmode){
-            playclick.setAttribute("src", "pause.png");
-        }else{
-            playclick.setAttribute("src", "bpause.png");
-        }
-        isAnimating = true;
-        startTime = Date.now() - elapsedTime; // 从暂停的地方开始
-        animate(); // 开始动画
-    } else {
-        if(nightmode){
-            playclick.setAttribute("src", "play.png");
-        }else{
-            playclick.setAttribute("src", "bplay.png");
-        }
-        isAnimating = false;
-        elapsedTime = Date.now() - startTime; // 记录当前已过时间
-        // 不再调用 animate，使得动画停止
+//function plays() {
+//    if (!isAnimating) {
+//        playclick.setAttribute("src", "pause.png");
+ //       isAnimating = true;
+ ////       startTime = Date.now() - elapsedTime;
+ //       animate(); // 啟動動畫循環
+ //   } else {
+ //       playclick.setAttribute("src", "play.png");
+ //       isAnimating = false;
+ //   }
+//}
+
+//function animate() {
+//    if (!isAnimating) return; // 如果不應該動畫，則退出函數
+//    draw();
+ //   requestAnimationFrame(animate); // 繼續動畫循環
+//}
+function plays(){
+    if(play==0){
+        playclick.setAttribute("src","pause.png");
+        play=1;
+    }else{
+        playclick.setAttribute("src","play.png");
+        play=0;
     }
 }
-
-function whatmode() {
-    if (!nightmode) {
-        document.getElementById('title').setAttribute("src","https://images.cooltext.com/5683812.png");
-        if (isAnimating) {
-            playclick.setAttribute("src", "pause.png");
-        }else{
-            playclick.setAttribute("src", "play.png");
-        }
-        daymode.setAttribute("src", "sun.png");
-        setting.setAttribute("src","setting.png");
-        canvas.setAttribute("border-color","black")
-        threelines.setAttribute("src","threeline.jpg")
-        document.getElementById('plus').setAttribute("src","plus.jpg");
-        nightmode = true;
-        document.body.style.backgroundColor = 'black';
-        document.getElementById("bpmWord").style.color = "white";
-    } else {
-        document.getElementById('title').setAttribute("src","https://images.cooltext.com/5683816.png");
-        if (isAnimating) {
-            playclick.setAttribute("src", "bpause.png");
-        }else{
-            playclick.setAttribute("src", "bplay.png");
-        }
-        daymode.setAttribute("src", "moon.png");
-        setting.setAttribute("src","bsetting.png");
-        canvas.setAttribute("border-color","white");
-        threelines.setAttribute("src","bthreeline.jpg");
-        document.getElementById('plus').setAttribute("src","bplus.jpg");
-        nightmode = false;
-        document.body.style.backgroundColor = 'white';
-        document.getElementById("bpmWord").style.color = "black";
-    }
-}
-
-function animate() {
-    if (!isAnimating) return; // 如果不應該動畫，則退出函數
-        draw();
-        requestAnimationFrame(animate); // 繼續動畫循環
-}
-
 
 document.getElementById('plus').onclick = addPolygon;
 // Event listeners

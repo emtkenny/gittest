@@ -10,23 +10,23 @@
     <div>
         <img src="threeline.jpg" id="threeline">
         <img src="setting.png" id="setting">
+        <img src="sun.png" id="daymode" onclick="whatmode()">
     </div>
+    <img src="https://images.cooltext.com/5683812.png" id="title" width="578" height="171" alt="Polythm" />
     <br>
     <div>
-        <img src="plus.jpg" id="plus">
+        <img src="plus.jpg" class="plus" id="plus" onclick="addPolygon()">
     </div>
     <div>
         <img src="play.png"class="play" id="play" onclick="plays()">
     </div>
     <canvas id="beatCanvas" width="400" height="400"></canvas>
-    <div class="sides">
-        <label for="sides">Number of Sides:</label>
-        <input type="number" id="sides" min="2"value="4">
-    </div>
     <div class="bpm">
-        <label for="bpm">BPM:</label>
+        <label for="bpm" id="bpmWord">BPM:</label>
         <input type="number" id="bpm" min="1" name="bpm"value="120">
     </div>
+    <audio id="BeatSound" src="beat.mp3" type="audio/mpeg" ></audio>
     <script src="script.js"></script>
 </body>
+
 </html>

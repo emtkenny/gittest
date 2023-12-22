@@ -1,16 +1,19 @@
-#beatCanvas {
-    border: 1px solid black;
-}
+
 
 body {
     background-color: black; /* 設定背景顏色為黑色 */
 }
-
+#title{
+    position: fixed;
+    top:0%;
+    left: 33%;
+}
 canvas {
     position:fixed;
     top: 37%;
     left: 30%;
-    border: 1px solid white; /* 給 canvas 加上白色邊框 */
+    border: 1px ; /* 給 canvas 加上白色邊框 */
+    border-color: white;
 }
 body{
     background-color: black;
@@ -21,14 +24,18 @@ body label{
     color: white;
     height: 40px;
     font-size: 45px;
-    
 }
 div img{
     height: 40px;
 }
 div #setting{
     position:fixed;
-    right:1%
+    right:1%;
+}
+div #daymode{
+    position:fixed;
+    right:1%;
+    top:6%;
 }
 .bpm{
     position: fixed;
