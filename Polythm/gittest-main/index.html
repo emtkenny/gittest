@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Polythm</title>
+</head>
+<body>
+    <div>
+        
+        <a href="mailto:1225kenny1225@gmail.com">
+            <img src="question.png" id="question" >
+        </a>
+        <img src="sun.png" id="daymode" onclick="whatmode()">
+        <nav>
+        <img src="threeline.jpg" id="threeline" onclick="drop()" class="dropbtn">
+            <span>
+                <div>
+                    <img src="plus.jpg" class="plus" id="plus" onclick="addPolygon()">
+                </div>
+                <br>
+                <div>
+                    <img src="minus.jpg" class="minus" id="minus" onclick="removePolygons()">
+                </div>
+                <br>
+                <div>
+                    <img src="play.png"class="play" id="play" onclick="plays()">
+                </div>
+                <br>
+                <div class="vol">
+                    <img src=volume.png id="volImg">
+                    <input type="number" id="vol" min="1" name="vol"value="100">
+                <div>
+            </span>
+        </img>
+        </nav>
+    </div>
+    <img src="https://images.cooltext.com/5683812.png" id="title" width="578" height="171" alt="Polythm" />
+    <br> 
+    <canvas id="beatCanvas" width="400" height="400"></canvas>
+    <audio id="BeatSound" src="2.mp3" class="BeatSound" type="audio/mpeg" ></audio>
+    <div class="bpm">
+        <label for="bpm" id="bpmWord">BPM:</label>
+        <input type="number" id="bpm" min="1" name="bpm"value="120">
+    <div>
+    <script src="script.js"></script>
+</body>
+
+</html>

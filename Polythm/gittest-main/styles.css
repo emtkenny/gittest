@@ -18,7 +18,6 @@ canvas {
 body{
     background-color: black;
     position: absolute;
-    
 }
 body label{
     color: white;
@@ -28,7 +27,7 @@ body label{
 div img{
     height: 40px;
 }
-div #setting{
+div #question{
     position:fixed;
     right:1%;
 }
@@ -42,26 +41,29 @@ div #daymode{
     top:90%;
     left:0%;
 }
-.sides{
-    position: fixed;
-    top:80%;
-    left:0%;
-}
-body .sides input{
-    position:relative;
-    font-size: 25px;
-    top:-6px;
-    width: 55px;
-}
 body .bpm input{
     position:relative;
     font-size: 25px;
     top:-6px;
     width: 55px;
 }
-body div #play{
-    position:fixed;
-    top: 70%;
-    left: 20%;
-    height: 40px;
+
+nav span{ 
+    left: 99999px;
+        opacity: 0;
+        -webkit-transition: opacity 0.5s;
+        transition: opacity 0.5s;
+
+}
+nav:hover span{ 
+                  left: 0px;
+                  opacity: 1;
+                  -webkit-transition: opacity 0.5s;
+                  transition: opacity 0.5s;  
+}
+.vol input{
+    position:relative;
+    font-size: 25px;
+    top:-12px;
+    width: 60px;
 }
