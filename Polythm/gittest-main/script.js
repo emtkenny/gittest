@@ -27,10 +27,27 @@ function getRandomColor() {
     }
     return color;
 }
-function playBeat() {
-    var sound = document.getElementById('BeatSound');
-    sound.play();
+// 创建一个包含多个 Audio 对象的数组
+var audioPool = [];
+for (var k = 0; k < 20; k++){
+    audioPool[k]=[];
 }
+
+for (var i = 0; i < 20; i++) {
+    audioPool[i][2] = new Audio('2.mp3');
+    audioPool[i][3] = new Audio('3.mp3');
+    audioPool[i][4] = new Audio('4.mp3');
+    audioPool[i][5] = new Audio('5.mp3');
+    audioPool[i][6] = new Audio('6.mp3');
+    audioPool[i][7] = new Audio('7.mp3');
+    audioPool[i][8] = new Audio('8.mp3');
+    audioPool[i][9] = new Audio('9.mp3');
+}
+
+// 用于跟踪当前使用哪个音频对象
+var currentAudioIndex = 0;
+
+
 
 var polygonColor = getRandomColor(); 
 var polygons = []; // 存儲多邊形的數組
@@ -46,10 +63,10 @@ function addPolygon() {
 
     if (sidesNum && polygons.length < 8) {
         var color = getRandomColor();
-        polygons.push({ 
-            sides: sidesNum, 
-            color: color, 
-            startTime: Date.now(), 
+        polygons.push({
+            sides: sidesNum,
+            color: color,
+            startTime: Date.now(),
             indicatorX: null, // 初始化圓點的 X 坐標
             indicatorY: null, // 初始化圓點的 Y 坐標
             currentEdge: 0 // 初始化當前邊
@@ -61,7 +78,6 @@ function addPolygon() {
     }
 }
 
-// 其他函數保持不變
 
 
 function resetStartTime() {
@@ -99,7 +115,9 @@ function drawBeatIndicator() {
         vo.volume=vol;
         if (nextEdge != polygon.currentEdge) {
             polygon.currentEdge = nextEdge;
-            playBeat();
+            var sound = audioPool[currentAudioIndex][polygon.sides];
+            sound.play();
+            currentAudioIndex = (currentAudioIndex + 1) % audioPool.length;
         }
 
         var currentEdge = Math.floor(progress);
@@ -142,11 +160,22 @@ function drawPolygon(sides, color) {
     ctx.stroke();
 }
 function updateInputs() {
-    // Update sides and BPM
-    vol = parseFloat(volInput.value/100);
+    // 获取并解析 BPM 输入值
     bpm = parseInt(bpmInput.value);
-    interval = 240000 / bpm; // Recalculate interval
+
+    // 检查 BPM 是否在允许的范围内，或者输入是否为空
+    if (isNaN(bpm) || bpm < 1) {
+        bpm = 1;  // 小于 1 或为空时，设置 BPM 为 1
+    } else if (bpm > 500) {
+        bpm = 500;  // 大于 500 时，设置 BPM 为 500
+    }
+
+    bpmInput.value = bpm;  // 更新输入框显示
+    interval = 240000 / bpm; // 重新计算间隔
+    resetStartTime(); // 重置开始时间
+    draw(); // 重新绘制
 }
+
 var isAnimating = false; // 用於控制動畫的全局變量
 
 function plays() {
@@ -230,8 +259,6 @@ function removePolygons() {
         draw();
     }
 }
-
-
 
 document.getElementById('plus').onclick = addPolygon;
 bpmInput.addEventListener("input", updateInputs);

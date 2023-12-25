@@ -11,7 +11,7 @@ body {
 canvas {
     position:fixed;
     top: 37%;
-    left: 30%;
+    left: 37%;
     border: 1px ; /* 給 canvas 加上白色邊框 */
     border-color: white;
 }
