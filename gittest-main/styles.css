@@ -67,3 +67,10 @@ nav:hover span{
     top:-12px;
     width: 60px;
 }
+.bpm a{
+    position: fixed;
+    font-size: 25px;
+    top:97%;
+    left:98%;
+    color:white
+}
