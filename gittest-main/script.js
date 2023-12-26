@@ -61,21 +61,28 @@ function addPolygon() {
         return;
     }
 
-    if (sidesNum && polygons.length < 8) {
-        var color = getRandomColor();
-        polygons.push({
-            sides: sidesNum,
-            color: color,
-            startTime: Date.now(),
-            indicatorX: null, // 初始化圓點的 X 坐標
-            indicatorY: null, // 初始化圓點的 Y 坐標
-            currentEdge: 0 // 初始化當前邊
-        });
-        resetStartTime();
-        draw();
-    } else if (polygons.length >= 8) {
-        alert("最多只能添加8個圖形");
+    if (sidesNum > 9) {
+        alert("最多只能生成9邊的圖形！");
+        return;
     }
+
+    if (polygons.length >= 8) {
+        alert("最多只能添加8個圖形");
+        return;
+    }
+
+    var color = getRandomColor();
+    polygons.push({ 
+        sides: sidesNum, 
+        color: color, 
+        startTime: Date.now(), 
+        indicatorX: null,
+        indicatorY: null, 
+        currentEdge: 0,
+        firstBeat: true // 新添加的多邊形標誌為第一次撥放
+    });
+    resetStartTime();
+    draw();
 }
 
 
@@ -89,33 +96,49 @@ function resetStartTime() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // 更新 elapsedTime
-    if (isAnimating) {
-        elapsedTime = Date.now() - startTime;
-    }
-
-    // 绘制所有多边形和圆点
     polygons.forEach(polygon => {
         drawPolygon(polygon.sides, polygon.color);
-        drawBeatIndicator();
+        if (!isAnimating) {
+            drawStaticIndicator(polygon); // 绘制静态圆点
+        } else {
+            drawBeatIndicator(polygon); // 绘制动态圆点
+        }
     });
+    if (isAnimating) {
+        animationId = requestAnimationFrame(draw);
+    }
+}
+function drawStaticIndicator(polygon) {
+    // 计算起始位置的圆点坐标
+    var angle = (2 * Math.PI) / polygon.sides;
+    var x = canvas.width / 2 + 150 * Math.cos(0);
+    var y = canvas.height / 2 + 150 * Math.sin(0);
 
-    animationId = requestAnimationFrame(draw);
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI * 2);
+    ctx.fillStyle = polygon.color;
+    ctx.fill();
 }
 
+
 function drawBeatIndicator() {
+
+    if (!isAnimating) return;  // 如果动画未进行，不更新圆点位置
+
     var currentTime = Date.now();
     polygons.forEach(polygon => {
         var elapsedTime = currentTime - startTime;
         var edgeInterval = interval / polygon.sides;
         var progress = (elapsedTime % interval) / edgeInterval;
         var nextEdge = Math.floor(progress);
-        
-        vo.volume=vol;
-        if (nextEdge != polygon.currentEdge) {
+
+        if (nextEdge != polygon.currentEdge || polygon.firstBeat) {
+            if(polygon.firstBeat) {
+                polygon.firstBeat = false; // 取消第一次撥放的標誌
+            }
             polygon.currentEdge = nextEdge;
             var sound = audioPool[currentAudioIndex][polygon.sides];
+            sound.volume = vol;
             sound.play();
             currentAudioIndex = (currentAudioIndex + 1) % audioPool.length;
         }
@@ -159,22 +182,7 @@ function drawPolygon(sides, color) {
     ctx.strokeStyle = color;
     ctx.stroke();
 }
-function updateInputs() {
-    // 获取并解析 BPM 输入值
-    bpm = parseInt(bpmInput.value);
 
-    // 检查 BPM 是否在允许的范围内，或者输入是否为空
-    if (isNaN(bpm) || bpm < 1) {
-        bpm = 1;  // 小于 1 或为空时，设置 BPM 为 1
-    } else if (bpm > 500) {
-        bpm = 500;  // 大于 500 时，设置 BPM 为 500
-    }
-
-    bpmInput.value = bpm;  // 更新输入框显示
-    interval = 240000 / bpm; // 重新计算间隔
-    resetStartTime(); // 重置开始时间
-    draw(); // 重新绘制
-}
 
 var isAnimating = false; // 用於控制動畫的全局變量
 
@@ -182,23 +190,33 @@ function plays() {
     if (!isAnimating) {
         if(nightmode){
             playclick.setAttribute("src", "pause.png");
-        }else{
+        } else {
             playclick.setAttribute("src", "bpause.png");
         }
         isAnimating = true;
-        startTime = Date.now() - elapsedTime; // 从暂停的地方开始
+        startTime = Date.now();
         animate(); // 开始动画
     } else {
         if(nightmode){
             playclick.setAttribute("src", "play.png");
-        }else{
+        } else {
             playclick.setAttribute("src", "bplay.png");
         }
         isAnimating = false;
-        elapsedTime = Date.now() - startTime; // 记录当前已过时间
-        // 不再调用 animate，使得动画停止
+        elapsedTime = 0;
+        resetStartTime(); // 重置开始时间和圆点位置
+        draw(); // 重绘一次以确保动画处于初始状态
     }
 }
+
+function resetStartTime() {
+    var newStartTime = Date.now();
+    polygons.forEach(polygon => {
+        polygon.startTime = newStartTime;
+        polygon.currentEdge = -1; // 重置当前边
+    });
+}
+
 
 function whatmode() {
     if (!nightmode) {
@@ -237,6 +255,57 @@ function whatmode() {
         document.getElementById("bpmWord").style.color = "black";
     }
 }
+function playBeat() {
+    // 获取当前的音频对象
+    var sound = audioPool[currentAudioIndex][polygon.sides];
+    // 播放音频
+    sound.play();
+    // 移至下一个音频对象
+    currentAudioIndex = (currentAudioIndex + 1) % audioPool.length;
+}
+
+function beatVolume() {
+    // 确保 vol 在 0 到 1 之间
+    var adjustedVolume = Math.min(Math.max(vol, 0), 1);
+
+    for (var i = 0; i < audioPool.length; i++) {
+        for (var j = 2; j <= 9; j++) {
+            if (audioPool[i][j]) {
+                audioPool[i][j].volume = adjustedVolume;
+            }
+        }
+    }
+}
+
+
+function updateInputs() {
+    // 获取并解析 BPM 输入值
+
+    beatVolume();
+    bpm = parseInt(bpmInput.value);
+
+    // 检查 BPM 是否在允许的范围内，或者输入是否为空
+    if (isNaN(bpm) || bpm < 1) {
+        bpm = 1;  // 小于 1 或为空时，设置 BPM 为 1
+    } else if (bpm > 500) {
+        bpm = 500;  // 大于 500 时，设置 BPM 为 500
+    }
+
+    vol = parseFloat(volInput.value);
+    if (isNaN(vol) || vol < 0) {
+        vol = 0;
+    } else if (vol > 100) {
+        vol = 100;
+    }
+    volInput.value = vol;
+    vol = vol / 100; // 转换为 0 到 1 的范围
+
+    beatVolume(); // 更新音频池中的音量
+    interval = 240000 / bpm; // 重新计算间隔
+    resetStartTime(); // 重置开始时间
+    draw(); // 重新绘制
+}
+
 
 function animate() {
     if (!isAnimating) return; // 如果不應該動畫，則退出函數
